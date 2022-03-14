@@ -1,0 +1,75 @@
+{
+	"compiler": {
+		"version": "0.8.6+commit.11564f7e"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_a",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_b",
+						"type": "uint256"
+					}
+				],
+				"name": "calculos",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"Bloque 1\\InteraccionSmartContracts\\librerias.sol": "calculo"
+		},
+		"evmVersion": "berlin",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"Bloque 1\\InteraccionSmartContracts\\librerias.sol": {
+			"keccak256": "0xbe158a547cb5672505c2fc0131abbb41080827bed96cc0aea5f202612599c756",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9ff0b0fe79dcb67591aafafd901a3a0dae8c167e371c84ccb825390450069f64",
+				"dweb:/ipfs/QmdazPEV1fwdSehq8e93KSWY3JWQpxds7VzyDN5b6C1ENF"
+			]
+		}
+	},
+	"version": 1
+}
