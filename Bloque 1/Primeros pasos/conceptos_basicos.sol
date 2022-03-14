@@ -1,4 +1,6 @@
-pragma solidity >=0.4.4 <0.7.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0; 
+
 //Importar el archivo ERC20.sol que está en nuestro directorio de trabajo
 import "./ERC20.sol";
 
