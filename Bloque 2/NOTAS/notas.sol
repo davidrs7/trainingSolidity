@@ -1,7 +1,15 @@
-// SPDX-License-Identifier: GPL-3.0-or-later and SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 /*
+
+    Notas: Para desplegar este contrato se puede hacer mediante la red de pruebas de Rinkeby Metamask
+    -- Si no tienes saldo suficiente puedes enviarlo mendiante la siguiente página:
+       https://faucets.chain.link/rinkeby?_ga=2.224721375.411349804.1638276408-1024165543.1638276408
+
+
+    Data para pruebas: 
+    
     alumno |  id    |  nota
     Marcos   77755N      5
     Joan     12345X      9 
@@ -44,8 +52,21 @@ contract notas{
         //require que valide que el parametro de entrada sea igual al owner del contrato
         require(_direccionProfesor == profesor, "No tienes permisos para ejecutar esta funcion" );
         _;
+    }
 
+    function verNotas(string memory _idAlumno) public view returns(uint) {
+        bytes32 hashAlumno = keccak256(abi.encodePacked(_idAlumno));
+        uint nota_alumno = Notas[hashAlumno];
+        return nota_alumno;
+    }
 
+    function Revision(string memory _idAlumno) public{
+        revisiones.push(_idAlumno);
+        emit evento_revision(_idAlumno);
+    }
+
+    function verRevisiones()public view soloProfesor(msg.sender) returns(string[] memory){
+        return revisiones;
     }
 
 }
