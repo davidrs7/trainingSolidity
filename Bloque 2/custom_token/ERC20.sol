@@ -28,13 +28,16 @@ interface IERC20{
     //Evento que se debe emitir cuando se establece una asignación con el metodo allowance()
     event Approval(address indexed owner,address indexed spender,uint value);
 }
-
+/*
+  URL con los datos de binance smart chain Testnet: https://docs.ricefarm.fi/guides/metamask-add-bsc
+  URL de Faucet binance smart chain: https://testnet.binance.org/faucet-smart
+*/
 // contrato ERC20 
 contract ERC20Basic is IERC20{
 
     string public constant name = "ERC20BlockchainAZ";
     string public constant symbol = "ERC";
-    uint8  public constant decimals = 18;
+    uint8  public constant decimals = 2;
 
     mapping(address => uint) balances;
     mapping(address => mapping(address => uint)) allowed; 
