@@ -48,7 +48,7 @@ contract Disney{
         //Se transfiere el numero de Token
         token.transfer(msg.sender,_numTokens);
         //Registro tokens comprados
-        Clientes[msg.sender].tokens_comprados = _numTokens;
+        Clientes[msg.sender].tokens_comprados += _numTokens;
     }
 
     // Retorna el total de tokens del contrato Disney
@@ -70,6 +70,62 @@ contract Disney{
     modifier Unicamente(address _direccion){
         require (_direccion == owner, "Privilegios insuficientes para ejcutar esta funcion");
         _;
+    }
+
+
+
+// ---------------------------------------- GESTION DE DISNEY ------------------------------------- //
+
+// Eventos 
+event disfruta_atraccion(string);
+event nueva_atraccion(string,uint);
+event baja_atraccion(string);
+
+// Estructura de datos de la atraccion
+struct atraccion{
+    string nombre_atraccion;
+    uint precio_atraccion;
+    bool estado_atraccion;
+}
+
+// Mapping para relacionar un nombre de una atraccion con una estructura de datos de la atracción 
+mapping(string => atraccion) public MappingAtracciones;
+
+//Array para almacenar el nombre de las atracciones
+string[] Atracciones;
+
+//Mapping para relacionar un cliente con su historico de disney
+mapping(address => string[]) HistorialAtracciones;
+
+// Star Wars -> 2 Tokens
+// Toy Story -> 5 Tokens
+// Piratas del caribe -> 8 Tokens
+
+// Crear nuevas atracciones para Disney, solo se permite ejecutar por Disney
+function NuevaAtraccion(string memory _nombreAtraccion,uint _precio) public Unicamente(msg.sender){
+    // Validar si existe la atraccion
+    require(keccak256(abi.encodePacked(MappingAtracciones[_nombreAtraccion].nombre_atraccion))  != keccak256(abi.encodePacked(_nombreAtraccion)) , "Esta atraccion ya existe" );
+    // Creación de una atraccion en disney
+    MappingAtracciones[_nombreAtraccion] = atraccion(_nombreAtraccion,_precio,true);
+    // Almacenar la atraccion en el array 
+    Atracciones.push(_nombreAtraccion);
+    // Emisión del evento para la nueva atraccion
+    emit nueva_atraccion(_nombreAtraccion,_precio);
+}
+
+// Inactivar la atracción de disney
+function BajaAtraccion(string memory _nombreAtraccion) public Unicamente(msg.sender){
+    //Validar si existe la atracción
+    require(keccak256(abi.encodePacked(MappingAtracciones[_nombreAtraccion].nombre_atraccion))  == keccak256(abi.encodePacked(_nombreAtraccion)) , "Esta atraccion no existe" );
+    //Cambiar el estado de la atraccióna  a FALSE => no está en uso
+    MappingAtracciones[_nombreAtraccion].estado_atraccion = false;
+    //Emisión del evento dar de baja 
+    emit baja_atraccion(_nombreAtraccion); 
+}
+
+// Visualizar atracciones disponibles 
+    function AtraccionesDisponibles() public view returns(string[] memory){
+        return Atracciones;
     }
 
 }
