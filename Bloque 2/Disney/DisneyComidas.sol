@@ -2,7 +2,7 @@ pragma solidity ^0.8.0;
 import "./SafeMath.sol";
 import "./ERC20.sol";
 
-contract Disney{
+contract DisneyComidas{
 
     // --------------------------------------------------- DECLARACIONES INICIALES --------------------------------------------------------- //
     // Instancia del contrato token
@@ -18,7 +18,7 @@ contract Disney{
     // Estructura de datos para almacenar los clientes de Disney
     struct cliente{
         uint tokens_comprados;
-        string [] atracciones_disfrutadas;
+        string [] Comidas_disfrutadas;
     }
 
     //Mapping para el registro de cliente
@@ -32,7 +32,7 @@ contract Disney{
         return _numTokens * (1 ether);
     }
 
-    // Funcion para comprar tokens en Disney y disfrutar de las atracciones
+    // Funcion para comprar tokens en Disney y disfrutar de las Comidas
     function CompraTokens(uint _numTokens)public payable{
         //Establecer el precio de los Tokens
         uint coste = PrecioTokens(_numTokens);
@@ -77,65 +77,65 @@ contract Disney{
 // ---------------------------------------- GESTION DE DISNEY ------------------------------------- //
 
 // Eventos 
-event disfruta_atraccion(string,uint,address);
-event nueva_atraccion(string,uint);
-event baja_atraccion(string);
+event disfruta_Comida(string,uint,address);
+event nueva_Comida(string,uint);
+event baja_Comida(string);
 
-// Estructura de datos de la atraccion
-struct atraccion{
-    string nombre_atraccion;
-    uint precio_atraccion;
-    bool estado_atraccion;
+// Estructura de datos de la Comida
+struct Comida{
+    string nombre_Comida;
+    uint precio_Comida;
+    bool estado_Comida;
 }
 
-// Mapping para relacionar un nombre de una atraccion con una estructura de datos de la atracción 
-mapping(string => atraccion) public MappingAtracciones;
+// Mapping para relacionar un nombre de una Comida con una estructura de datos de la atracción 
+mapping(string => Comida) public MappingComidas;
 
-//Array para almacenar el nombre de las atracciones
-string[] Atracciones;
+//Array para almacenar el nombre de las Comidas
+string[] Comidas;
 
 //Mapping para relacionar un cliente con su historico de disney
-mapping(address => string[]) HistorialAtracciones;
+mapping(address => string[]) HistorialComidas;
 
 // Star Wars -> 2 Tokens
 // Toy Story -> 5 Tokens
 // Piratas del caribe -> 8 Tokens
 
-// Crear nuevas atracciones para Disney, solo se permite ejecutar por Disney
-function NuevaAtraccion(string memory _nombreAtraccion,uint _precio) public Unicamente(msg.sender){
-    // Validar si existe la atraccion
-    require(keccak256(abi.encodePacked(MappingAtracciones[_nombreAtraccion].nombre_atraccion))  != keccak256(abi.encodePacked(_nombreAtraccion)) , "Esta atraccion ya existe" );
-    // Creación de una atraccion en disney
-    MappingAtracciones[_nombreAtraccion] = atraccion(_nombreAtraccion,_precio,true);
-    // Almacenar la atraccion en el array 
-    Atracciones.push(_nombreAtraccion);
-    // Emisión del evento para la nueva atraccion
-    emit nueva_atraccion(_nombreAtraccion,_precio);
+// Crear nuevas Comidas para Disney, solo se permite ejecutar por Disney
+function NuevaComida(string memory _nombreComida,uint _precio) public Unicamente(msg.sender){
+    // Validar si existe la Comida
+    require(keccak256(abi.encodePacked(MappingComidas[_nombreComida].nombre_Comida))  != keccak256(abi.encodePacked(_nombreComida)) , "Esta Comida ya existe" );
+    // Creación de una Comida en disney
+    MappingComidas[_nombreComida] = Comida(_nombreComida,_precio,true);
+    // Almacenar la Comida en el array 
+    Comidas.push(_nombreComida);
+    // Emisión del evento para la nueva Comida
+    emit nueva_Comida(_nombreComida,_precio);
 }
 
 // Inactivar la atracción de disney
-function BajaAtraccion(string memory _nombreAtraccion) public Unicamente(msg.sender){
+function BajaComida(string memory _nombreComida) public Unicamente(msg.sender){
     //Validar si existe la atracción
-    require(keccak256(abi.encodePacked(MappingAtracciones[_nombreAtraccion].nombre_atraccion))  == keccak256(abi.encodePacked(_nombreAtraccion)) , "Esta atraccion no existe" );
+    require(keccak256(abi.encodePacked(MappingComidas[_nombreComida].nombre_Comida))  == keccak256(abi.encodePacked(_nombreComida)) , "Esta Comida no existe" );
     //Cambiar el estado de la atraccióna  a FALSE => no está en uso
-    MappingAtracciones[_nombreAtraccion].estado_atraccion = false;
+    MappingComidas[_nombreComida].estado_Comida = false;
     //Emisión del evento dar de baja 
-    emit baja_atraccion(_nombreAtraccion); 
+    emit baja_Comida(_nombreComida); 
 }
 
-// Visualizar atracciones disponibles 
-    function AtraccionesDisponibles() public view returns(string[] memory){
-        return Atracciones;
+// Visualizar Comidas disponibles 
+    function ComidasDisponibles() public view returns(string[] memory){
+        return Comidas;
     }
 
     // Funcion para subirse a una atracción en Disney y pagar en tokens esta atracción
-    function SubirseAtraccion (string memory _nombreAtraccion) public{
+    function SubirseComida (string memory _nombreComida) public{
         // Precio de la atracción en tokens
-        uint tokens_atraccion = MappingAtracciones[_nombreAtraccion].precio_atraccion;
+        uint tokens_Comida = MappingComidas[_nombreComida].precio_Comida;
         // Verifica el estado de la atracción (si está disponible)
-        require(MappingAtracciones[_nombreAtraccion].estado_atraccion == true, "Atraccion no disponible en este momento");
+        require(MappingComidas[_nombreComida].estado_Comida == true, "Comida no disponible en este momento");
         //Validar si el cliente tiene el numero de clientes necesarios para subirse a la atracción
-        require(tokens_atraccion <= MisTokens(), "Necesitas mas tokens para subirte a esta atraccion");     
+        require(tokens_Comida <= MisTokens(), "Necesitas mas tokens para subirte a esta Comida");     
    
 
     /* El cliente paga la atracción en tokens 
@@ -143,17 +143,17 @@ function BajaAtraccion(string memory _nombreAtraccion) public Unicamente(msg.sen
         ya que al usar el Transfer o TransferFrom escogía las direcciones equivocadas.  ya que el msg.sender que se recibía
         era la dirección del contrato.     
     */
-    token.transferencia_disney(msg.sender,address(this), tokens_atraccion);
-    // Almacenamiento en el historial de atracciones del cliente
-    HistorialAtracciones[msg.sender].push(_nombreAtraccion);
-    // Emisión del evento disfruta atraccion
-    emit disfruta_atraccion(_nombreAtraccion,tokens_atraccion,msg.sender);    
+    token.transferencia_disney(msg.sender,address(this), tokens_Comida);
+    // Almacenamiento en el historial de Comidas del cliente
+    HistorialComidas[msg.sender].push(_nombreComida);
+    // Emisión del evento disfruta Comida
+    emit disfruta_Comida(_nombreComida,tokens_Comida,msg.sender);    
     } 
 
-    // Visualizar el historial completo de atracciones disfrutadas por un cliente
+    // Visualizar el historial completo de Comidas disfrutadas por un cliente
 
     function Historial() public returns(string[] memory){
-        return HistorialAtracciones[msg.sender];
+        return HistorialComidas[msg.sender];
     } 
  
     // funcion para que a un cliente se le puedan retoranr sus tokens
