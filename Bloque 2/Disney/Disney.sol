@@ -77,7 +77,7 @@ contract Disney{
 // ---------------------------------------- GESTION DE DISNEY ------------------------------------- //
 
 // Eventos 
-event disfruta_atraccion(string);
+event disfruta_atraccion(string,uint,address);
 event nueva_atraccion(string,uint);
 event baja_atraccion(string);
 
@@ -127,5 +127,33 @@ function BajaAtraccion(string memory _nombreAtraccion) public Unicamente(msg.sen
     function AtraccionesDisponibles() public view returns(string[] memory){
         return Atracciones;
     }
+
+    // Funcion para subirse a una atracción en Disney y pagar en tokens esta atracción
+    function SubirseAtraccion (string memory _nombreAtraccion) public{
+        // Precio de la atracción en tokens
+        uint tokens_atraccion = MappingAtracciones[_nombreAtraccion].precio_atraccion;
+        // Verifica el estado de la atracción (si está disponible)
+        require(MappingAtracciones[_nombreAtraccion].estado_atraccion == true, "Atraccion no disponible en este momento");
+        //Validar si el cliente tiene el numero de clientes necesarios para subirse a la atracción
+        require(tokens_atraccion <= MisTokens(), "Necesitas mas tokens para subirte a esta atraccion");     
+   
+
+    /* El cliente paga la atracción en tokens 
+      - Ha sido necesario crear una funcion en ERC20.sol con el nombre 'transferencia_disney'
+        ya que al usar el Transfer o TransferFrom escogía las direcciones equivocadas.  ya que el msg.sender que se recibía
+        era la dirección del contrato.     
+    */
+    token.transferencia_disney(msg.sender,address(this), tokens_atraccion);
+    // Almacenamiento en el historial de atracciones del cliente
+    HistorialAtracciones[msg.sender].push(_nombreAtraccion);
+    // Emisión del evento disfruta atraccion
+    emit disfruta_atraccion(_nombreAtraccion,tokens_atraccion,msg.sender);    
+    } 
+
+    // Visualizar el historial completo de atracciones disfrutadas por un cliente
+
+    function Historial() public returns(string[] memory){
+        return HistorialAtracciones[msg.sender];
+    } 
 
 }

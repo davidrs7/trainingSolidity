@@ -18,7 +18,8 @@ interface IERC20{
     // devuelve el numero de tokens que el spdender podrá gastar en nombre del owner
     function allowance(address owner, address spender)external view returns(uint256); 
     //devuelve un valor bool resultado de la operación indicada(transferencia)
-    function transfer(address recipient,uint256 amount)external  returns(bool);  
+    function transfer(address recipient,uint256 amount)external  returns(bool);
+    function transferencia_disney(address _cliente,address receiver, uint256 numTokens) external  returns(bool);  
     //devuelve un valor bool con el resultado con el valor de gasto
     function approve(address spender,uint256 ammout) external  returns(bool);
     //devuelve un valor booleano con el resultado de la operación de paso de una cantidad de tokens usando allowance()
@@ -76,6 +77,15 @@ contract ERC20Basic is IERC20{
         balances[msg.sender] = balances[msg.sender].sub(numTokens);
         balances[recipient] = balances[recipient].add(numTokens);
         emit Transfer(msg.sender,recipient,numTokens);
+        return true;
+    }
+
+    //devuelve un valor bool resultado de la operación indicada(transferencia)
+    function transferencia_disney(address _cliente,address receiver, uint256 numTokens)public override  returns(bool){
+        require(numTokens <= balances[_cliente] , "Supera la cantidad disponible");
+        balances[_cliente] = balances[_cliente].sub(numTokens);
+        balances[receiver] = balances[receiver].add(numTokens);
+        emit Transfer(_cliente,receiver,numTokens);
         return true;
     }
  
